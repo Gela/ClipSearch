@@ -13,47 +13,48 @@ import android.widget.EditText;
 public class MainActivity extends AppCompatActivity {
 
     Button searchButton;
+    EditText searchBox;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        EditText searchText = findViewById(R.id.searchBox);
-        searchButton = findViewById(R.id.searchbutton);
+        searchBox = findViewById(R.id.search_box);
+        searchButton = findViewById(R.id.search_button);
+
+        /// TODO check for clipboard here and only disable if CB is empty
         searchButton.setEnabled(false);
 
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent;
-                intent = new Intent(MainActivity.this, searchActivity.class);
+                String query = searchBox.getText().toString().trim();
+                Intent intent = new Intent(MainActivity.this, searchActivity.class);
+                // Pass the query to search activity so it can be appended to DDG url
+                intent.putExtra("query", query);
                 startActivity(intent);
             }
         });
 
         // Listener to disable and enable the search button depending on the text input
-        searchText.addTextChangedListener(new TextWatcher() {
+        searchBox.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                // Not needed for this implementation
+            public void beforeTextChanged(CharSequence input, int start, int count, int after) {
+                //  This is not needed for this implementation
             }
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            public void onTextChanged(CharSequence input, int start, int before, int count) {
                 // Check if EditText is empty or not
-                if (s.toString().trim().length() > 0) {
-                    // Enable the button if EditText is not empty
-                    searchButton.setEnabled(true);
-                } else {
-                    // Disable the button if EditText is empty
-                    searchButton.setEnabled(false);
-                }
+                // Enable the search button if EditText is not empty
+                // Disable the search button if EditText is empty
+                searchButton.setEnabled(input.toString().trim().length() > 0);
             }
 
             @Override
-            public void afterTextChanged(Editable s) {
-                //N/A
+            public void afterTextChanged(Editable input) {
+                // This is not needed for this implementation
             }
         });
     }
