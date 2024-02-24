@@ -21,18 +21,25 @@ public class searchActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
 
-        //Get a hold of main layout to get to the search box
-        View mainLayout = getLayoutInflater().inflate(R.layout.activity_main, null);
-        searchButton = mainLayout.findViewById(R.id.search_button);
+        initializeViews();
+        loadSearchResults();
+    }
 
+    private void initializeViews() {
         webView = findViewById(R.id.searchWebView);
         webView.setWebViewClient(new WebViewClient());
+    }
 
-        /// TODO Security concerns about malicious injections here so we should trim the input
-        /// TODO What if whatever is in the clipboard is a media and not text? Ignore in that case?
+    /**
+     * This method exists to abstract away logic which receives the
+     * input string from the main activity and appends that to the DDG URL
+     * and then loads the URL to show the search results.
+     */
+    private void loadSearchResults() {
         String query = getIntent().getStringExtra("query");
         if (query != null && !query.isEmpty()) {
-            webView.loadUrl("https://www.duckduckgo.com/?q=" + query);
+            String searchUrl = "https://www.duckduckgo.com/?q=" + query;
+            webView.loadUrl(searchUrl);
         }
     }
 }
